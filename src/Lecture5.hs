@@ -11,7 +11,7 @@ import Prelude hiding ( and, replicate, product, take, length,
 --------------------------------------------------------------------------------
 -- Factorial
 
-factorial :: Int -> Int
+factorial :: (Eq a, Num a) => a -> a
 factorial 0 = 1
 factorial n = n * factorial (n-1)
 
@@ -34,30 +34,48 @@ product (n:ns) = n * product ns
 -- Demo
 
 and :: [Bool] -> Bool
-and = undefined
+and []     = True
+and (x:xs) = x && and xs
 
 length :: [a] -> Int
-length = undefined
+length []     = 0
+length (x:xs) = 1 + length xs
 
 take :: Int -> [a] -> [a]
-take = undefined
+take 0 xs     = []
+take n []     = []
+take n (x:xs) = x : take (n-1) xs
 
 replicate :: Int -> a -> [a]
-replicate = undefined
+replicate 0 x = []
+replicate n x = x : replicate (n-1) x
 
 (++) :: [a] -> [a] -> [a]
-(++) = undefined
+[]     ++ ys = ys
+(x:xs) ++ ys = x : (xs ++ ys)
 
 reverse :: [a] -> [a]
-reverse = undefined
+reverse []     = []
+reverse (x:xs) = reverse xs ++ [x]
+
+palindrome :: Eq a => [a] -> Bool
+palindrome xs = reverse xs == xs
 
 concat :: [[a]] -> [a]
-concat = undefined
+concat []       = []
+concat (xs:xss) = xs ++ concat xss
 
 splitAt :: Int -> [a] -> ([a],[a])
-splitAt = undefined
+--splitAt n xs = (take n xs, drop n xs)
+splitAt 0 xs     = ([], xs)
+splitAt n []     = ([], [])
+splitAt n (x:xs) = (x:ys, zs)
+    where
+        (ys, zs) = splitAt (n-1) xs
 
 zip :: [a] -> [b] -> [(a,b)]
-zip = undefined
+zip [] _          = []
+zip _ []          = []
+zip (x:xs) (y:ys) = (x,y) : zip xs ys
 
 --------------------------------------------------------------------------------
